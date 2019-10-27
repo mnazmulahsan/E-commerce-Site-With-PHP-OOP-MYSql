@@ -1,9 +1,23 @@
 ﻿<?php include 'inc/header.php';?>
 <?php include 'inc/sidebar.php';?>
+<?php include '../classes/Product.php'; ?>
+<?php include '../classes/Category.php'; ?>
+<?php include '../classes/Brand.php'; ?>
+<?php 
+   $pd = new Product();
+   if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])){
+      $inserProduct = $pd->productInsert($_POST, $_FILES);
+   }
+?>
 <div class="grid_10">
     <div class="box round first grid">
         <h2>Add New Product</h2>
-        <div class="block">               
+        <div class="block"> 
+        <?php 
+          if(isset($inserProduct)){
+            echo $inserProduct;
+          }
+        ?>              
          <form action="" method="post" enctype="multipart/form-data">
             <table class="form">
                
@@ -12,7 +26,7 @@
                         <label>Name</label>
                     </td>
                     <td>
-                        <input type="text" placeholder="Enter Product Name..." class="medium" />
+                        <input type="text" name="productName" placeholder="Enter Product Name..." class="medium" />
                     </td>
                 </tr>
 				<tr>
@@ -20,11 +34,16 @@
                         <label>Category</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
+                        <select id="select" name="catId">
                             <option>Select Category</option>
-                            <option value="1">Category One</option>
-                            <option value="2">Category Two</option>
-                            <option value="3">Category Three</option>
+                            <?php 
+                               $cat = new Category();
+                               $allcat = $cat->catList();
+                               if($allcat){
+                                while($acat = $allcat->fetch_assoc()){
+                             ?>
+                            <option value="<?php echo $acat['catId']; ?>"><?php echo $acat['catName']; ?></option>
+                            <?php } } ?>
                         </select>
                     </td>
                 </tr>
@@ -33,11 +52,16 @@
                         <label>Brand</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
+                        <select id="select" name="brandId">
                             <option>Select Brand</option>
-                            <option value="1">Brand One</option>
-                            <option value="2">Brand Two</option>
-                            <option value="3">Brand Three</option>
+                            <?php 
+                               $brand = new Brand();
+                               $allbrand = $brand->brandList();
+                               if($allbrand){
+                                while($abrand = $allbrand->fetch_assoc()){
+                             ?>
+                            <option value="<?php echo $abrand['brandId'];?>"><?php echo $abrand['brandName'];?></option>
+                            <?php } } ?>
                         </select>
                     </td>
                 </tr>
@@ -47,7 +71,7 @@
                         <label>Description</label>
                     </td>
                     <td>
-                        <textarea class="tinymce"></textarea>
+                        <textarea name="body" rows="15" cols="106"></textarea>
                     </td>
                 </tr>
 				<tr>
@@ -55,7 +79,7 @@
                         <label>Price</label>
                     </td>
                     <td>
-                        <input type="text" placeholder="Enter Price..." class="medium" />
+                        <input type="text" name="price" placeholder="Enter Price..." class="medium" />
                     </td>
                 </tr>
             
@@ -64,7 +88,7 @@
                         <label>Upload Image</label>
                     </td>
                     <td>
-                        <input type="file" />
+                        <input type="file" name="image" />
                     </td>
                 </tr>
 				
@@ -73,10 +97,10 @@
                         <label>Product Type</label>
                     </td>
                     <td>
-                        <select id="select" name="select">
+                        <select id="select" name="type">
                             <option>Select Type</option>
-                            <option value="1">Featured</option>
-                            <option value="2">Non-Featured</option>
+                            <option value="0">Featured</option>
+                            <option value="1">Non-Featured</option>
                         </select>
                     </td>
                 </tr>
@@ -92,8 +116,9 @@
         </div>
     </div>
 </div>
+
 <!-- Load TinyMCE -->
-<script src="js/tiny-mce/jquery.tinymce.js" type="text/javascript"></script>
+<!-- <script src="js/tiny-mce/jquery.tinymce.js" type="text/javascript"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         setupTinyMCE();
@@ -101,8 +126,9 @@
         $('input[type="checkbox"]').fancybutton();
         $('input[type="radio"]').fancybutton();
     });
-</script>
+</script> -->
 <!-- Load TinyMCE -->
+
 <?php include 'inc/footer.php';?>
 
 
